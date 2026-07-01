@@ -3,7 +3,7 @@
 import { motion } from "framer-motion";
 
 const letterMotion = {
-  initial: { opacity: 0, y: 5 },
+  initial: { opacity: 0, y: 4 },
   animate: { opacity: 1, y: 0 },
   duration: 0.1,
 };
@@ -28,11 +28,37 @@ function AnimatedChar({
         delay: delay + index * stagger,
         ease: "easeOut",
       }}
-      className="inline-block"
+      className="inline overflow-visible"
       aria-hidden="true"
     >
       {char === " " ? "\u00A0" : char}
     </motion.span>
+  );
+}
+
+function AnimatedWord({
+  word,
+  startIndex,
+  delay,
+  stagger,
+}: {
+  word: string;
+  startIndex: number;
+  delay: number;
+  stagger: number;
+}) {
+  return (
+    <span className="inline-block overflow-visible align-baseline">
+      {word.split("").map((char, charIndex) => (
+        <AnimatedChar
+          key={charIndex}
+          char={char}
+          index={startIndex + charIndex}
+          delay={delay}
+          stagger={stagger}
+        />
+      ))}
+    </span>
   );
 }
 
@@ -55,29 +81,32 @@ export function LetterReveal({
   let charIndex = 0;
 
   return (
-    <Tag className={className} aria-label={text}>
+    <Tag
+      className={[className, "overflow-visible break-normal"].filter(Boolean).join(" ")}
+      aria-label={text}
+    >
       {tokens.map((token, tokenIndex) => {
         const isSpace = /^\s+$/.test(token);
 
-        return (
-          <span
-            key={`${tokenIndex}-${token}`}
-            className={isSpace ? "inline" : "inline-block whitespace-nowrap"}
-          >
-            {token.split("").map((char, charIndexInToken) => {
-              const index = charIndex++;
+        if (isSpace) {
+          return (
+            <span key={`${tokenIndex}-space`} className="inline">
+              {" "}
+            </span>
+          );
+        }
 
-              return (
-                <AnimatedChar
-                  key={charIndexInToken}
-                  char={char}
-                  index={index}
-                  delay={delay}
-                  stagger={stagger}
-                />
-              );
-            })}
-          </span>
+        const startIndex = charIndex;
+        charIndex += token.length;
+
+        return (
+          <AnimatedWord
+            key={`${tokenIndex}-${token}`}
+            word={token}
+            startIndex={startIndex}
+            delay={delay}
+            stagger={stagger}
+          />
         );
       })}
     </Tag>
@@ -103,24 +132,44 @@ export function LetterRevealSegments({
   let charOffset = 0;
 
   return (
-    <Tag className={className} aria-label={fullText}>
-      {segments.map((segment, segmentIndex) => (
-        <span key={segmentIndex} className={segment.className}>
-          {segment.text.split("").map((char, charIndex) => {
-            const index = charOffset++;
+    <Tag
+      className={[className, "overflow-visible break-normal"].filter(Boolean).join(" ")}
+      aria-label={fullText}
+    >
+      {segments.map((segment, segmentIndex) => {
+        const tokens = segment.text
+          .split(/(\s+)/)
+          .filter((token) => token.length > 0);
 
-            return (
-              <AnimatedChar
-                key={charIndex}
-                char={char}
-                index={index}
-                delay={delay}
-                stagger={stagger}
-              />
-            );
-          })}
-        </span>
-      ))}
+        return (
+          <span key={segmentIndex} className={segment.className}>
+            {tokens.map((token, tokenIndex) => {
+              const isSpace = /^\s+$/.test(token);
+
+              if (isSpace) {
+                return (
+                  <span key={`${segmentIndex}-${tokenIndex}-space`} className="inline">
+                    {" "}
+                  </span>
+                );
+              }
+
+              const startIndex = charOffset;
+              charOffset += token.length;
+
+              return (
+                <AnimatedWord
+                  key={`${segmentIndex}-${tokenIndex}-${token}`}
+                  word={token}
+                  startIndex={startIndex}
+                  delay={delay}
+                  stagger={stagger}
+                />
+              );
+            })}
+          </span>
+        );
+      })}
     </Tag>
   );
 }

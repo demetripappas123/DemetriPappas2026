@@ -9,22 +9,24 @@ import {
   type ReactNode,
 } from "react";
 
+export type SocialPlacement = "hero" | "sidebar" | "contact";
+
 type SocialDockContextValue = {
-  docked: boolean;
-  setDocked: (docked: boolean) => void;
+  placement: SocialPlacement;
+  setPlacement: (placement: SocialPlacement) => void;
 };
 
 const SocialDockContext = createContext<SocialDockContextValue | null>(null);
 
 export function SocialDockProvider({ children }: { children: ReactNode }) {
-  const [docked, setDocked] = useState(false);
+  const [placement, setPlacement] = useState<SocialPlacement>("hero");
 
   const value = useMemo(
     () => ({
-      docked,
-      setDocked,
+      placement,
+      setPlacement,
     }),
-    [docked],
+    [placement],
   );
 
   return (

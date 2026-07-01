@@ -39,12 +39,22 @@ export type SocialLink = {
 };
 
 export const socialLinks: SocialLink[] = [
-  { id: "github", href: "https://github.com", label: "GitHub", icon: GitHubIcon },
+  {
+    id: "github",
+    href: "https://github.com/demetripappas123/",
+    label: "GitHub",
+    icon: GitHubIcon,
+  },
   {
     id: "linkedin",
-    href: "https://linkedin.com",
+    href: "https://www.linkedin.com/in/demetri-pappas",
     label: "LinkedIn",
     icon: LinkedInIcon,
   },
-  { id: "connect", href: "#contact", label: "Connect", icon: HandshakeIcon },
+  {
+    id: "connect",
+    href: "https://app.joinhandshake.com/profiles/7ptkwa",
+    label: "Connect",
+    icon: HandshakeIcon,
+  },
 ];

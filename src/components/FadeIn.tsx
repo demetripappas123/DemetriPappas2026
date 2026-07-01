@@ -1,9 +1,12 @@
 "use client";
 
-import { motion, type Variants } from "framer-motion";
+import { motion, useReducedMotion, type Variants } from "framer-motion";
+
+type FadeInElement = "div" | "li" | "h2" | "ul" | "section";
 
 type FadeInProps = {
-  as?: "div" | "li" | "h2" | "ul";
+  as?: FadeInElement;
+  id?: string;
   delay?: number;
   className?: string;
   variants?: Variants;
@@ -12,16 +15,18 @@ type FadeInProps = {
 
 export function FadeIn({
   as = "div",
+  id,
   delay = 0,
   className,
   variants,
   children,
 }: FadeInProps) {
+  const reduceMotion = useReducedMotion();
   const Component = motion[as];
 
   if (variants) {
     return (
-      <Component className={className} variants={variants}>
+      <Component id={id} className={className} variants={variants}>
         {children}
       </Component>
     );
@@ -29,11 +34,12 @@ export function FadeIn({
 
   return (
     <Component
+      id={id}
       className={className}
-      initial={{ opacity: 0, y: 14 }}
+      initial={reduceMotion ? { opacity: 1 } : { opacity: 0, y: 12 }}
       whileInView={{ opacity: 1, y: 0 }}
-      viewport={{ once: true, amount: 0.15 }}
-      transition={{ duration: 0.45, delay, ease: "easeOut" }}
+      viewport={{ once: true, amount: 0.12 }}
+      transition={{ duration: 0.5, delay, ease: "easeOut" }}
     >
       {children}
     </Component>

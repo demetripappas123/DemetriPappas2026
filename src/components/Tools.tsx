@@ -1,41 +1,25 @@
-const toolGroups = [
-  {
-    category: "Languages",
-    items: ["TypeScript", "JavaScript", "Python"],
-  },
-  {
-    category: "Frameworks",
-    items: ["React", "Next.js", "Node.js"],
-  },
-  {
-    category: "Tools",
-    items: ["Git", "Docker", "VS Code"],
-  },
-];
+import SkillBinGrid from "@/components/SkillBinGrid";
+import { FadeIn } from "@/components/FadeIn";
+import { skillBins } from "@/components/tools-data";
 
 export default function Tools() {
   return (
-    <section id="tools" className="border-t border-zinc-200 py-24 dark:border-zinc-800">
-      <h2 className="text-2xl font-semibold tracking-tight">Tools</h2>
-      <div className="mt-10 grid gap-8 sm:grid-cols-3">
-        {toolGroups.map((group) => (
-          <div key={group.category}>
-            <h3 className="text-sm font-medium uppercase tracking-widest text-zinc-500">
-              {group.category}
-            </h3>
-            <ul className="mt-4 space-y-2">
-              {group.items.map((item) => (
-                <li
-                  key={item}
-                  className="text-sm text-zinc-700 dark:text-zinc-300"
-                >
-                  {item}
-                </li>
-              ))}
-            </ul>
-          </div>
-        ))}
+    <FadeIn as="section" id="tools" className="relative z-10 py-24">
+      <div
+        aria-hidden
+        className="pointer-events-none absolute inset-y-0 left-1/2 z-0 w-screen -translate-x-1/2 bg-[#1c1c1c]"
+      />
+
+      <div className="relative z-10 mx-6 sm:mx-8">
+        <h2 className="text-left text-3xl font-bold uppercase tracking-tight min-[400px]:text-4xl sm:text-5xl">
+          <span className="text-zinc-50">Parts Inventory.</span>
+        </h2>
+        <p className="mt-2 text-base italic text-slate-400 sm:text-lg">
+          Technologies and skills I specialize in.
+        </p>
+
+        <SkillBinGrid bins={skillBins} />
       </div>
-    </section>
+    </FadeIn>
   );
 }

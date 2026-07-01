@@ -294,7 +294,8 @@ function MiamiCard({
 
 export default function Education() {
   return (
-    <section
+    <FadeIn
+      as="section"
       id="education"
       className="relative isolate border-t border-zinc-200 py-24 dark:border-zinc-800"
     >
@@ -313,7 +314,7 @@ export default function Education() {
         <FadeIn
           as="h2"
           variants={fadeUpItem}
-          className="text-left text-4xl font-bold uppercase tracking-tight sm:text-5xl"
+          className="text-left text-3xl font-bold uppercase tracking-tight min-[400px]:text-4xl sm:text-5xl"
         >
           <span className="text-foreground">
             A summary of my formal education{" "}
@@ -331,6 +332,6 @@ export default function Education() {
           <MiamiCard item={miami} />
         </FadeIn>
       </EducationDockBridge>
-    </section>
+    </FadeIn>
   );
 }
