@@ -10,8 +10,27 @@ const labelClassName =
 
 type FormStatus = "idle" | "loading" | "success" | "error";
 
+type Web3FormsResult = {
+  success?: boolean;
+  message?: string;
+};
+
 function isValidEmail(value: string) {
   return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value);
+}
+
+async function parseWeb3FormsResponse(response: Response): Promise<Web3FormsResult> {
+  const text = await response.text();
+
+  if (!text.trim()) {
+    throw new Error("Empty response from the form service. Please try again.");
+  }
+
+  try {
+    return JSON.parse(text) as Web3FormsResult;
+  } catch {
+    throw new Error("Unexpected response from the form service. Please try again.");
+  }
 }
 
 export default function ContactForm() {
@@ -20,6 +39,14 @@ export default function ContactForm() {
 
   async function handleSubmit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
+
+    const accessKey = process.env.NEXT_PUBLIC_WEB3FORMS_ACCESS_KEY;
+
+    if (!accessKey) {
+      setStatus("error");
+      setErrorMessage("Contact form is not configured.");
+      return;
+    }
 
     const form = event.currentTarget;
     const data = new FormData(form);
@@ -41,26 +68,40 @@ export default function ContactForm() {
       return;
     }
 
+    const message = [
+      phone ? `Phone: ${phone}` : null,
+      business ? `Business: ${business}` : null,
+      "",
+      notes,
+    ]
+      .filter(Boolean)
+      .join("\n");
+
     setStatus("loading");
     setErrorMessage("");
 
     try {
-      const response = await fetch("/api/contact", {
+      const response = await fetch("https://api.web3forms.com/submit", {
         method: "POST",
-        headers: { "Content-Type": "application/json" },
+        headers: {
+          "Content-Type": "application/json",
+          Accept: "application/json",
+        },
         body: JSON.stringify({
+          access_key: accessKey,
+          subject: `Portfolio inquiry from ${name}`,
+          from_name: name,
           name,
           email,
-          phone,
-          business,
-          notes,
+          phone: phone || undefined,
+          message,
         }),
       });
 
-      const result = (await response.json()) as { error?: string };
+      const result = await parseWeb3FormsResponse(response);
 
-      if (!response.ok) {
-        throw new Error(result.error ?? "Failed to send message.");
+      if (!response.ok || !result.success) {
+        throw new Error(result.message ?? "Failed to send message.");
       }
 
       setStatus("success");
@@ -84,7 +125,6 @@ export default function ContactForm() {
             id="contact-name"
             name="name"
             type="text"
-            required
             autoComplete="name"
             placeholder="Jane Doe"
             className={inputClassName}
@@ -99,8 +139,8 @@ export default function ContactForm() {
           <input
             id="contact-email"
             name="email"
-            type="email"
-            required
+            type="text"
+            inputMode="email"
             autoComplete="email"
             placeholder="jane@company.com"
             className={inputClassName}
@@ -149,7 +189,6 @@ export default function ContactForm() {
         <textarea
           id="contact-notes"
           name="notes"
-          required
           rows={5}
           placeholder="Tell me about the role, project, or how I can help."
           className={`${inputClassName} resize-y min-h-[8rem]`}
