@@ -70,224 +70,209 @@ const miami: School = {
   classes: [],
 };
 
-function CardLabel({
+const educationCardClassName =
+  "flex flex-col rounded-2xl border border-zinc-200 bg-white p-3 shadow-sm sm:p-4";
+
+const educationCardCompactClassName =
+  "flex flex-col rounded-2xl border border-zinc-200 bg-white p-3 shadow-sm sm:p-4";
+
+function SectionLabel({ children }: { children: React.ReactNode }) {
+  return (
+    <p className="text-xs font-medium uppercase tracking-wide text-zinc-500">
+      {children}
+    </p>
+  );
+}
+
+function EducationCard({
   children,
-  large = false,
-  prominent = false,
-  white = false,
+  className = "",
+  compact = false,
+  variants = fadeUpItem,
 }: {
   children: React.ReactNode;
-  large?: boolean;
-  prominent?: boolean;
-  white?: boolean;
-}) {
-  return (
-    <p
-      className={
-        prominent
-          ? "text-lg font-medium uppercase tracking-wide text-white sm:text-xl"
-          : white
-            ? "text-xs font-medium uppercase tracking-wide text-white"
-            : large
-              ? "text-sm font-medium uppercase tracking-wide text-slate-500 sm:text-base dark:text-slate-400"
-              : "text-xs font-medium uppercase tracking-wide text-slate-500 dark:text-slate-400"
-      }
-    >
-      {children}
-    </p>
-  );
-}
-
-function CourseCode({ children }: { children: React.ReactNode }) {
-  return (
-    <p className="text-xs font-medium uppercase tracking-wide text-slate-500 dark:text-slate-400">
-      {children}
-    </p>
-  );
-}
-
-function SchoolHeader({
-  item,
-  large = false,
-}: {
-  item: School;
-  large?: boolean;
-}) {
-  return (
-    <>
-      <h3
-        className={
-          large
-            ? "text-lg font-semibold uppercase leading-snug tracking-wide text-zinc-100 sm:text-xl"
-            : "text-base font-semibold uppercase leading-snug tracking-wide text-zinc-100 sm:text-lg"
-        }
-      >
-        {item.school}
-        {item.subtitle && (
-          <>
-            {" · "}
-            {item.subtitle}
-          </>
-        )}
-      </h3>
-      <ul className="mt-1.5 space-y-1">
-        {item.degrees.map((degree) => (
-          <li key={degree} className="text-sm leading-6 text-zinc-100">
-            {degree}
-          </li>
-        ))}
-        <li className="text-sm leading-6 text-zinc-100">{item.dates}</li>
-      </ul>
-    </>
-  );
-}
-
-function GpaLine({ gpa, large = false }: { gpa: string; large?: boolean }) {
-  if (large) {
-    return (
-      <div>
-        <p className="text-4xl leading-none font-semibold tracking-tight text-zinc-100 sm:text-5xl">
-          {gpa}
-        </p>
-        <p className="mt-1 text-lg font-medium uppercase tracking-[0.15em] text-zinc-100 sm:text-xl">
-          /4.0 GPA
-        </p>
-      </div>
-    );
-  }
-
-  return (
-    <p className="text-3xl font-semibold tracking-tight text-zinc-100 sm:text-4xl">
-      {gpa}
-    </p>
-  );
-}
-
-function HonorsList({
-  honors,
-  largeLabel = false,
-  largeText = false,
-  prominent = false,
-  whiteLabel = false,
-}: {
-  honors: string[];
-  largeLabel?: boolean;
-  largeText?: boolean;
-  prominent?: boolean;
-  whiteLabel?: boolean;
-}) {
-  return (
-    <>
-      <CardLabel large={largeLabel} prominent={prominent} white={whiteLabel}>
-        Honors
-      </CardLabel>
-      <ul
-        className={
-          prominent
-            ? "mt-3 list-disc space-y-5 pl-5 marker:text-white"
-            : largeText
-              ? "mt-2 list-disc space-y-1.5 pl-5 marker:text-zinc-100"
-              : "mt-2 space-y-1.5"
-        }
-      >
-        {honors.map((honor) => (
-          <li
-            key={honor}
-            className={
-              prominent
-                ? "text-base leading-snug text-white sm:text-lg"
-                : largeText
-                  ? "text-base leading-7 text-zinc-100"
-                  : "text-sm leading-6 text-zinc-100"
-            }
-          >
-            {honor}
-          </li>
-        ))}
-      </ul>
-    </>
-  );
-}
-
-function CourseList({ courses }: { courses: Course[] }) {
-  return (
-    <ul className="space-y-4">
-      {courses.map((course) => (
-        <li key={course.code}>
-          <CourseCode>{course.code}</CourseCode>
-          <p className="mt-1 text-sm leading-6 text-zinc-100">
-            <span className="font-medium">{course.name}</span>
-            {" — "}
-            <span className="italic">{course.description}</span>
-          </p>
-        </li>
-      ))}
-    </ul>
-  );
-}
-
-function UcfCard({
-  item,
-  variants = fadeUpItem,
-}: {
-  item: School;
-  variants?: typeof fadeUpItem;
-}) {
-  const [classColOne, classColTwo] = [
-    item.classes.slice(0, 2),
-    item.classes.slice(2, 4),
-  ];
-
-  return (
-    <FadeIn as="li" variants={variants} className="bg-[#1c1c1c] p-4 sm:p-5">
-      <div className="flex flex-col gap-6 lg:flex-row lg:items-stretch lg:gap-8">
-        <div className="flex min-h-[14rem] flex-1 flex-col lg:min-h-[16rem]">
-          <div className="flex flex-1 flex-col">
-            <SchoolHeader item={item} large />
-          </div>
-          <div className="flex flex-1 items-center">
-            <GpaLine gpa={item.gpa} large />
-          </div>
-        </div>
-
-        <div className="flex flex-1 flex-col lg:border-l lg:border-zinc-200/35 lg:pl-8">
-          <HonorsList honors={item.honors} prominent />
-        </div>
-
-        <div className="flex flex-1 flex-col lg:border-l lg:border-zinc-200/35 lg:pl-8">
-          <CourseList courses={classColOne} />
-        </div>
-
-        <div className="flex flex-1 flex-col lg:border-l lg:border-zinc-200/35 lg:pl-8">
-          <CourseList courses={classColTwo} />
-        </div>
-      </div>
-    </FadeIn>
-  );
-}
-
-function MiamiCard({
-  item,
-  variants = fadeUpItem,
-}: {
-  item: School;
+  className?: string;
+  compact?: boolean;
   variants?: typeof fadeUpItem;
 }) {
   return (
     <FadeIn
       as="li"
       variants={variants}
-      className="flex min-w-0 flex-col bg-[#1c1c1c] p-4 sm:p-5"
+      className={`${compact ? educationCardCompactClassName : `${educationCardClassName} h-full`} ${className}`.trim()}
     >
-      <div className="flex h-full flex-col gap-6 sm:flex-row sm:gap-6">
-        <div className="flex min-w-0 flex-1 flex-col">
-          <SchoolHeader item={item} large />
-        </div>
+      {children}
+    </FadeIn>
+  );
+}
 
-        <div className="min-w-0 flex-1 sm:border-l sm:border-zinc-200/35 sm:pl-6">
-          <HonorsList honors={item.honors} largeText whiteLabel />
-        </div>
+function SchoolOverviewCard({
+  item,
+  className = "",
+  compact = false,
+  variants = fadeUpItem,
+}: {
+  item: School;
+  className?: string;
+  compact?: boolean;
+  variants?: typeof fadeUpItem;
+}) {
+  return (
+    <EducationCard className={className} compact={compact} variants={variants}>
+      <h3 className="text-base font-semibold uppercase leading-snug tracking-wide text-zinc-900 sm:text-lg">
+        {item.school}
+      </h3>
+      {item.subtitle ? (
+        <p className="mt-0.5 text-sm leading-snug text-zinc-600">{item.subtitle}</p>
+      ) : null}
+
+      <ul className="mt-2.5 space-y-0.5 border-t border-zinc-100 pt-2.5">
+        {item.degrees.map((degree) => (
+          <li key={degree} className="text-sm leading-snug text-zinc-700">
+            {degree}
+          </li>
+        ))}
+        <li className="text-sm leading-snug text-zinc-500">{item.dates}</li>
+      </ul>
+    </EducationCard>
+  );
+}
+
+function GpaInline({ gpa }: { gpa: string }) {
+  return (
+    <div className="shrink-0 self-start text-left leading-none sm:text-right">
+      <p className="text-[10px] font-medium uppercase tracking-wide text-zinc-500 sm:text-xs">
+        GPA
+      </p>
+      <p className="mt-1 text-3xl font-semibold tracking-tight text-zinc-900 sm:text-4xl">
+        {gpa}
+        <span className="ml-0.5 text-sm font-medium text-zinc-400 sm:text-base">
+          /4.0
+        </span>
+      </p>
+    </div>
+  );
+}
+
+function HonorsCard({
+  honors,
+  label = "Honors",
+  gpa,
+  compact = false,
+  columns = false,
+  fillHeight = false,
+  className = "",
+  variants = fadeUpItem,
+}: {
+  honors: string[];
+  label?: string;
+  gpa?: string;
+  compact?: boolean;
+  columns?: boolean;
+  fillHeight?: boolean;
+  className?: string;
+  variants?: typeof fadeUpItem;
+}) {
+  return (
+    <EducationCard
+      compact={compact}
+      className={`${fillHeight ? "h-full" : ""} ${className}`.trim()}
+      variants={variants}
+    >
+      <SectionLabel>{label}</SectionLabel>
+      <div
+        className={`mt-2.5 flex flex-col gap-4 sm:mt-3 sm:flex-row sm:items-start sm:gap-5${fillHeight ? " flex-1" : ""}`}
+      >
+        <ul
+          className={
+            columns
+              ? "min-w-0 flex-1 list-disc pl-5 marker:text-zinc-400 grid grid-cols-1 gap-x-6 gap-y-2.5 sm:grid-cols-2 sm:gap-y-3"
+              : "min-w-0 flex-1 list-disc space-y-2 pl-5 marker:text-zinc-400"
+          }
+        >
+          {honors.map((honor) => (
+            <li key={honor} className="text-sm leading-snug text-zinc-700 sm:text-[0.9375rem]">
+              {honor}
+            </li>
+          ))}
+        </ul>
+        {gpa ? <GpaInline gpa={gpa} /> : null}
       </div>
+    </EducationCard>
+  );
+}
+
+function CoursesCard({
+  courses,
+  label = "Coursework",
+  variants = fadeUpItem,
+}: {
+  courses: Course[];
+  label?: string;
+  variants?: typeof fadeUpItem;
+}) {
+  return (
+    <EducationCard variants={variants}>
+      <SectionLabel>{label}</SectionLabel>
+      <ul className="mt-3 space-y-3">
+        {courses.map((course) => (
+          <li key={course.code}>
+            <p className="text-xs font-medium uppercase tracking-wide text-zinc-500">
+              {course.code}
+            </p>
+            <p className="mt-1 text-sm leading-snug text-zinc-700">
+              <span className="font-medium">{course.name}</span>
+              {" — "}
+              <span className="italic text-zinc-600">{course.description}</span>
+            </p>
+          </li>
+        ))}
+      </ul>
+    </EducationCard>
+  );
+}
+
+function splitInHalf<T>(items: T[]): [T[], T[]] {
+  const midpoint = Math.ceil(items.length / 2);
+  return [items.slice(0, midpoint), items.slice(midpoint)];
+}
+
+function SchoolEducationGrid({ item }: { item: School }) {
+  const [coursesOne, coursesTwo] = splitInHalf(item.classes);
+  const hasCourses = item.classes.length > 0;
+
+  if (hasCourses) {
+    return (
+      <div className="flex flex-col gap-3 sm:gap-4">
+        <FadeIn
+          as="ul"
+          variants={staggerGroup}
+          className="grid grid-cols-1 items-start gap-3 sm:grid-cols-2 sm:gap-4"
+        >
+          <SchoolOverviewCard item={item} compact />
+          <HonorsCard honors={item.honors} gpa={item.gpa} compact />
+        </FadeIn>
+
+        <FadeIn
+          as="ul"
+          variants={staggerGroup}
+          className="grid auto-rows-fr grid-cols-1 gap-3 sm:grid-cols-2 sm:gap-4"
+        >
+          <CoursesCard courses={coursesOne} label="Coursework I" />
+          <CoursesCard courses={coursesTwo} label="Coursework II" />
+        </FadeIn>
+      </div>
+    );
+  }
+
+  return (
+    <FadeIn
+      as="ul"
+      variants={staggerGroup}
+      className="grid grid-cols-1 items-stretch gap-3 sm:grid-cols-2 sm:gap-4"
+    >
+      <SchoolOverviewCard item={item} compact className="h-full" />
+      <HonorsCard honors={item.honors} compact columns fillHeight className="h-full" />
     </FadeIn>
   );
 }
@@ -322,15 +307,10 @@ export default function Education() {
           <span className="text-slate-700 dark:text-slate-500">and honors.</span>
         </FadeIn>
 
-        <FadeIn
-          as="ul"
-          variants={staggerGroup}
-          className="mt-10 flex flex-col gap-3"
-        >
-          <UcfCard item={ucf} />
-
-          <MiamiCard item={miami} />
-        </FadeIn>
+        <div className="mt-10 flex flex-col gap-8 sm:gap-10">
+          <SchoolEducationGrid item={ucf} />
+          <SchoolEducationGrid item={miami} />
+        </div>
       </EducationDockBridge>
     </FadeIn>
   );
