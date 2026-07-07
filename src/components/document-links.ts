@@ -1,10 +1,10 @@
 export const documentLinks = {
   resume: {
-    href: "/resume.pdf",
+    href: encodeURI("/Resume Current (8).pdf"),
     label: "Resume",
   },
   cv: {
-    href: "/cv.pdf",
+    href: encodeURI("/CV Current (1).pdf"),
     label: "CV",
   },
 } as const;
