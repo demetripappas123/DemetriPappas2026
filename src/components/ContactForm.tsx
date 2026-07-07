@@ -10,6 +10,10 @@ const labelClassName =
 
 type FormStatus = "idle" | "loading" | "success" | "error";
 
+function isValidEmail(value: string) {
+  return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value);
+}
+
 export default function ContactForm() {
   const [status, setStatus] = useState<FormStatus>("idle");
   const [errorMessage, setErrorMessage] = useState("");
@@ -19,6 +23,23 @@ export default function ContactForm() {
 
     const form = event.currentTarget;
     const data = new FormData(form);
+    const name = String(data.get("name") ?? "").trim();
+    const email = String(data.get("email") ?? "").trim();
+    const phone = String(data.get("phone") ?? "").trim();
+    const business = String(data.get("business") ?? "").trim();
+    const notes = String(data.get("notes") ?? "").trim();
+
+    if (!name || !email || !notes) {
+      setStatus("error");
+      setErrorMessage("Name, email, and notes are required.");
+      return;
+    }
+
+    if (!isValidEmail(email)) {
+      setStatus("error");
+      setErrorMessage("Please enter a valid email address.");
+      return;
+    }
 
     setStatus("loading");
     setErrorMessage("");
@@ -28,11 +49,11 @@ export default function ContactForm() {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
-          name: data.get("name"),
-          email: data.get("email"),
-          phone: data.get("phone"),
-          business: data.get("business"),
-          notes: data.get("notes"),
+          name,
+          email,
+          phone,
+          business,
+          notes,
         }),
       });
 
@@ -53,7 +74,7 @@ export default function ContactForm() {
   }
 
   return (
-    <form onSubmit={handleSubmit} className="space-y-5">
+    <form onSubmit={handleSubmit} noValidate className="space-y-5">
       <div className="grid gap-5 sm:grid-cols-2">
         <div>
           <label htmlFor="contact-name" className={labelClassName}>
@@ -96,7 +117,8 @@ export default function ContactForm() {
           <input
             id="contact-phone"
             name="phone"
-            type="tel"
+            type="text"
+            inputMode="tel"
             autoComplete="tel"
             placeholder="(555) 555-5555"
             className={inputClassName}
