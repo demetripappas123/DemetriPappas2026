@@ -11,7 +11,7 @@ export const skillBins: SkillBin[] = [
     id: "SKL-A",
     bin: "BIN A",
     title: "Languages",
-    items: ["Python", "TypeScript", "JavaScript", "C"],
+    items: ["Python", "TypeScript", "JavaScript", "C", "C++", "Java", "Go", "Kotlin"],
   },
   {
     id: "SKL-B",

@@ -53,7 +53,7 @@ export function SocialIconLink({
             }
           : { layout: { ...layoutTransition, delay: layoutDelay } }
       }
-      className="flex h-11 w-11 items-center justify-center rounded-full bg-black text-zinc-100 transition-colors hover:text-white"
+      className="flex h-11 w-11 items-center justify-center rounded-full bg-[#111111] text-zinc-100 transition-colors hover:bg-[#1a1a1a] hover:text-white"
     >
       <Icon />
     </motion.a>

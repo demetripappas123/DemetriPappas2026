@@ -51,7 +51,7 @@ function ProjectCard({ project }: { project: ProjectWithPreview }) {
   return (
     <article className="flex min-w-0 flex-col gap-6 overflow-visible min-[755px]:flex-row min-[755px]:items-center min-[755px]:gap-8">
       <div
-        className={`flex min-w-0 shrink flex-col bg-zinc-50 p-4 min-[755px]:min-w-0 min-[755px]:flex-[5] sm:p-5 dark:bg-zinc-100${previewFirst ? " order-2" : ""}`}
+        className={`flex min-w-0 shrink flex-col rounded-2xl border border-zinc-200/80 bg-white p-4 shadow-sm min-[755px]:min-w-0 min-[755px]:flex-[5] sm:p-5${previewFirst ? " order-2" : ""}`}
       >
         <p className="text-sm uppercase tracking-wide text-zinc-500">
           {project.period}
@@ -74,7 +74,7 @@ function ProjectCard({ project }: { project: ProjectWithPreview }) {
           {project.tags.map((tag) => (
             <li
               key={tag}
-              className="rounded-full border border-zinc-200 bg-white px-4 py-2 text-sm font-medium text-zinc-700"
+              className="rounded-full border border-zinc-200 bg-zinc-50 px-4 py-2 text-sm font-medium text-zinc-700"
             >
               {tag}
             </li>

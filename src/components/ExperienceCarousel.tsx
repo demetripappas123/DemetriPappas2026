@@ -7,20 +7,19 @@ import { useCallback, useEffect, useRef, useState } from "react";
 const previewPanelClassName =
   "@container relative max-[754px]:mb-8 max-[754px]:h-[22rem] w-full min-w-0 min-[755px]:mb-0 min-[755px]:flex-[3] min-[755px]:shrink-0 min-[755px]:max-[799px]:h-[clamp(20rem,calc(100cqw*3/4),28rem)] min-[800px]:max-[859px]:h-[clamp(21rem,calc(100cqw*3/4),30rem)] min-[860px]:max-[928px]:h-[clamp(22rem,calc(100cqw*3/4),32rem)] min-[929px]:max-[935px]:h-[clamp(21rem,calc(100cqw*3/4),36rem)] min-[936px]:h-[clamp(23rem,calc(100cqw*3/4),40rem)] min-[1000px]:h-[clamp(25rem,calc(100cqw*3/4),42rem)]";
 
+const experienceTagClassName =
+  "rounded-full border border-slate-400/60 bg-slate-600/70 px-4 py-2 text-sm font-medium text-zinc-50";
+
+const experienceTextPanelClassName =
+  "flex min-w-0 shrink flex-col rounded-2xl bg-slate-700 p-4 min-[755px]:min-w-0 min-[755px]:flex-[5] sm:p-5";
+
 function ExperienceTags({
   tags,
-  theme,
   tagRows,
 }: {
   tags: string[];
-  theme: "light" | "dark";
   tagRows?: boolean;
 }) {
-  const pillClassName =
-    theme === "dark"
-      ? "rounded-full border border-slate-500 bg-slate-700/80 px-4 py-2 text-sm font-medium text-slate-100"
-      : "rounded-full border border-zinc-200 bg-white px-4 py-2 text-sm font-medium text-zinc-700";
-
   if (tagRows) {
     return (
       <div className="mt-6 flex flex-col gap-2.5">
@@ -33,7 +32,7 @@ function ExperienceTags({
           return (
             <ul key={rowIndex} className="flex flex-wrap gap-2.5">
               {rowTags.map((tag) => (
-                <li key={tag} className={pillClassName}>
+                <li key={tag} className={experienceTagClassName}>
                   {tag}
                 </li>
               ))}
@@ -47,7 +46,7 @@ function ExperienceTags({
   return (
     <ul className="mt-6 flex flex-wrap gap-2.5">
       {tags.map((tag) => (
-        <li key={tag} className={pillClassName}>
+        <li key={tag} className={experienceTagClassName}>
           {tag}
         </li>
       ))}
@@ -56,78 +55,38 @@ function ExperienceTags({
 }
 
 function ExperienceCard({ item }: { item: ExperienceItem }) {
-  const theme = item.theme ?? "light";
-  const isDark = theme === "dark";
   const hasPreview = Boolean(item.url);
-
-  const textPanelClassName = isDark
-    ? "flex min-w-0 shrink flex-col bg-transparent p-4 min-[755px]:min-w-0 min-[755px]:flex-[5] sm:p-5"
-    : "flex min-w-0 shrink flex-col bg-zinc-50 p-4 min-[755px]:min-w-0 min-[755px]:flex-[5] sm:p-5 dark:bg-zinc-100";
 
   return (
     <div className="relative">
-      {isDark ? (
-        <div
-          aria-hidden
-          className="pointer-events-none absolute inset-y-0 left-1/2 z-0 w-screen -translate-x-1/2 bg-[#1c1c1c]"
-        />
-      ) : null}
-
       <article
         className={`relative z-10 flex min-w-0 flex-col gap-6 overflow-visible${hasPreview ? " min-[755px]:flex-row min-[755px]:items-center min-[755px]:gap-8" : ""}`}
       >
         <div
-          className={`${textPanelClassName}${!hasPreview ? " min-[755px]:flex-none" : ""}`}
+          className={`${experienceTextPanelClassName}${!hasPreview ? " min-[755px]:flex-none" : ""}`}
         >
-          <p
-            className={
-              isDark
-                ? "text-sm uppercase tracking-wide text-slate-300"
-                : "text-sm uppercase tracking-wide text-zinc-500"
-            }
-          >
+          <p className="text-sm uppercase tracking-wide text-slate-200">
             {item.period}
           </p>
 
-          <p
-            className={
-              isDark
-                ? "mt-2 text-lg font-semibold italic text-white sm:text-xl"
-                : "mt-2 text-lg leading-snug font-semibold italic text-zinc-900 sm:text-xl"
-            }
-          >
+          <p className="mt-2 text-lg font-semibold italic leading-snug text-white sm:text-xl">
             {item.intro}{" "}
-            <span className={isDark ? "text-slate-300" : "text-slate-700 dark:text-slate-500"}>
-              {item.highlight}
-            </span>{" "}
-            {item.outro}
+            <span className="text-zinc-100">{item.highlight}</span> {item.outro}
           </p>
 
           {item.location ? (
-            <p
-              className={
-                isDark
-                  ? "mt-1 text-sm uppercase tracking-wide text-slate-400"
-                  : "mt-1 text-sm uppercase tracking-wide text-zinc-500"
-              }
-            >
+            <p className="mt-1 text-sm uppercase tracking-wide text-slate-300">
               {item.location}
             </p>
           ) : null}
 
-          <ul
-            className={
-              isDark
-                ? "mt-6 list-disc space-y-4 pl-5 text-sm leading-7 text-slate-200 sm:text-base sm:leading-8"
-                : "mt-4 list-disc space-y-4 pl-5 text-sm leading-7 text-zinc-700 sm:text-base sm:leading-8"
-            }
-          >
+          <ul className="mt-6 list-disc space-y-4 pl-5 text-sm leading-7 text-zinc-50 marker:text-slate-300 sm:text-base sm:leading-8">
             {item.body.map((paragraph, index) => (
               <li key={index}>{paragraph}</li>
             ))}
           </ul>
 
-          <ExperienceTags tags={item.tags} theme={theme} tagRows={item.tagRows} />
+          <ExperienceTags tags={item.tags} tagRows={item.tagRows} />
         </div>
 
         {hasPreview ? (
